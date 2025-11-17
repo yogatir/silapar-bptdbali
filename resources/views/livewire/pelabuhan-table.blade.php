@@ -1,14 +1,4 @@
 <div class="p-6">
-    <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Filter Pelabuhan</label>
-        <select wire:model.live="filterPelabuhan" class="border rounded p-2 min-w-[200px]">
-            <option value="">Semua Pelabuhan</option>
-            @foreach($this->pelabuhanList as $pel)
-                <option value="{{ $pel['value'] }}">{{ $pel['label'] }}</option>
-            @endforeach
-        </select>
-    </div>
-
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200 border border-gray-300">
             <thead class="bg-gray-50">

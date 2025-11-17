@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use App\Enums\UserRole;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class AdminUserSeeder extends Seeder
@@ -13,12 +14,36 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::updateOrCreate(
-            ['email' => 'admin@bptdbali.com'],
+        $users = [
             [
+                'email' => 'admin@bptdbali.com',
                 'name' => 'Administrator',
-                'password' => Hash::make('admin'),
-            ]
-        );
+                'password' => 'admin',
+                'role' => UserRole::KABALAI,
+            ],
+            [
+                'email' => 'seksi@bptdbali.com',
+                'name' => 'Petugas Seksi',
+                'password' => 'seksi123',
+                'role' => UserRole::SEKSI,
+            ],
+            [
+                'email' => 'satpel@bptdbali.com',
+                'name' => 'Petugas Satpel',
+                'password' => 'satpel123',
+                'role' => UserRole::SATPEL,
+            ],
+        ];
+
+        foreach ($users as $user) {
+            User::updateOrCreate(
+                ['email' => $user['email']],
+                [
+                    'name' => $user['name'],
+                    'password' => Hash::make($user['password']),
+                    'role' => $user['role'],
+                ]
+            );
+        }
     }
 }

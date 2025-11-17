@@ -1,4 +1,7 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+    @php
+        $role = Auth::user()?->role;
+    @endphp
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -12,12 +15,27 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                    <x-nav-link href="{{ route('pelabuhan.form') }}" :active="request()->routeIs('pelabuhan.*')">
-                        {{ __('Pelabuhan') }}
-                    </x-nav-link>
+                    @if (in_array($role, [\App\Enums\UserRole::KABALAI, \App\Enums\UserRole::SEKSI], true))
+                        <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    @endif
+                    @if (in_array($role, [\App\Enums\UserRole::KABALAI, \App\Enums\UserRole::SATPEL], true))
+                        <x-nav-link href="{{ route('pelabuhan.form') }}" :active="request()->routeIs('pelabuhan.*')">
+                            {{ __('Pelabuhan') }}
+                        </x-nav-link>
+                        <x-nav-link href="{{ route('laporan-operasional-harian.form') }}" :active="request()->routeIs('laporan-operasional-harian.*')">
+                            {{ __('Laporan Operasional Harian') }}
+                        </x-nav-link>
+                        <x-nav-link href="{{ route('terminal.form') }}" :active="request()->routeIs('terminal.*')">
+                            {{ __('Terminal') }}
+                        </x-nav-link>
+                    @endif
+                    @if (in_array($role, [\App\Enums\UserRole::KABALAI, \App\Enums\UserRole::SEKSI], true))
+                        <x-nav-link href="{{ route('laporan-harian-seksi.form') }}" :active="request()->routeIs('laporan-harian-seksi.*')">
+                            {{ __('Laporan Harian Seksi') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -142,12 +160,27 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link href="{{ route('pelabuhan.form') }}" :active="request()->routeIs('pelabuhan.*')">
-                {{ __('Pelabuhan') }}
-            </x-responsive-nav-link>
+                @if (in_array($role, [\App\Enums\UserRole::KABALAI, \App\Enums\UserRole::SEKSI], true))
+                    <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                        {{ __('Dashboard') }}
+                    </x-responsive-nav-link>
+                @endif
+                @if (in_array($role, [\App\Enums\UserRole::KABALAI, \App\Enums\UserRole::SATPEL], true))
+                    <x-responsive-nav-link href="{{ route('pelabuhan.form') }}" :active="request()->routeIs('pelabuhan.*')">
+                        {{ __('Pelabuhan') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link href="{{ route('laporan-operasional-harian.form') }}" :active="request()->routeIs('laporan-operasional-harian.*')">
+                        {{ __('Laporan Operasional Harian') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link href="{{ route('terminal.form') }}" :active="request()->routeIs('terminal.*')">
+                        {{ __('Terminal') }}
+                    </x-responsive-nav-link>
+                @endif
+                @if (in_array($role, [\App\Enums\UserRole::KABALAI, \App\Enums\UserRole::SEKSI], true))
+                    <x-responsive-nav-link href="{{ route('laporan-harian-seksi.form') }}" :active="request()->routeIs('laporan-harian-seksi.*')">
+                        {{ __('Laporan Harian Seksi') }}
+                    </x-responsive-nav-link>
+                @endif
         </div>
 
         <!-- Responsive Settings Options -->

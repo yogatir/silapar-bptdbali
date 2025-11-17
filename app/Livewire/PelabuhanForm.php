@@ -2,11 +2,15 @@
 
 namespace App\Livewire;
 
-use App\Models\PelabuhanRecord;
+use App\Enums\UserRole;
+use App\Livewire\Concerns\AuthorizesRole;
+use App\Models\Pelabuhan;
 use Livewire\Component;
 
 class PelabuhanForm extends Component
 {
+    use AuthorizesRole;
+
     public $tanggal;
     public $waktu;
     public $pelabuhan = '';
@@ -23,7 +27,9 @@ class PelabuhanForm extends Component
 
     public function mount()
     {
-        $this->pelabuhanConfig = PelabuhanRecord::getPelabuhanConfig();
+        $this->authorizeRole([UserRole::KABALAI, UserRole::SATPEL]);
+
+        $this->pelabuhanConfig = Pelabuhan::getPelabuhanConfig();
     }
 
     public function updatedPelabuhan($value)
@@ -80,7 +86,7 @@ class PelabuhanForm extends Component
 
         $this->validate($rules);
 
-        PelabuhanRecord::create([
+        Pelabuhan::create([
             'tanggal' => $this->tanggal,
             'waktu' => $this->waktu,
             'pelabuhan' => $this->pelabuhan,

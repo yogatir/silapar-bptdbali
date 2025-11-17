@@ -2,7 +2,7 @@
 
 namespace App\Livewire;
 
-use App\Models\PelabuhanRecord;
+use App\Models\Pelabuhan;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -12,14 +12,19 @@ class PelabuhanTable extends Component
 
     public $filterPelabuhan = '';
 
-    public function updatingFilterPelabuhan()
+    public function mount($filterPelabuhan = '')
+    {
+        $this->filterPelabuhan = $filterPelabuhan;
+    }
+
+    public function updatedFilterPelabuhan()
     {
         $this->resetPage();
     }
 
     public function getRecordsProperty()
     {
-        $query = PelabuhanRecord::query()
+        $query = Pelabuhan::query()
             ->orderBy('tanggal', 'desc')
             ->orderBy('waktu', 'desc');
 
@@ -32,7 +37,7 @@ class PelabuhanTable extends Component
 
     public function getStatisticsProperty()
     {
-        $query = PelabuhanRecord::query();
+        $query = Pelabuhan::query();
 
         if ($this->filterPelabuhan) {
             $query->where('pelabuhan', $this->filterPelabuhan);
@@ -109,17 +114,6 @@ class PelabuhanTable extends Component
                 }),
             ],
         ];
-    }
-
-    public function getPelabuhanListProperty()
-    {
-        $config = PelabuhanRecord::getPelabuhanConfig();
-        return collect($config)->map(function ($config, $key) {
-            return [
-                'value' => $key,
-                'label' => $config['nama'],
-            ];
-        })->values()->toArray();
     }
 
     public function render()
