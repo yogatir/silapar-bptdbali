@@ -25,7 +25,7 @@
                             {{ __('Pelabuhan') }}
                         </x-nav-link>
                         <x-nav-link href="{{ route('laporan-operasional-harian.form') }}" :active="request()->routeIs('laporan-operasional-harian.*')">
-                            {{ __('Laporan Operasional Harian') }}
+                            {{ __('Satuan Pelayanan') }}
                         </x-nav-link>
                         <x-nav-link href="{{ route('terminal.form') }}" :active="request()->routeIs('terminal.*')">
                             {{ __('Terminal') }}
@@ -170,7 +170,7 @@
                         {{ __('Pelabuhan') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link href="{{ route('laporan-operasional-harian.form') }}" :active="request()->routeIs('laporan-operasional-harian.*')">
-                        {{ __('Laporan Operasional Harian') }}
+                        {{ __('Satuan Pelayanan') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link href="{{ route('terminal.form') }}" :active="request()->routeIs('terminal.*')">
                         {{ __('Terminal') }}

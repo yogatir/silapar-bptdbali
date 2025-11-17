@@ -1,5 +1,5 @@
 <div class="p-6 max-w-5xl mx-auto">
-    <h1 class="text-2xl font-bold mb-4">Laporan Operasional Harian</h1>
+    <h1 class="text-2xl font-bold mb-4">SATPEL UPPKB CEKIK</h1>
 
     @if (session()->has('message'))
         <div class="bg-green-100 text-green-800 p-3 rounded mb-4">

@@ -127,7 +127,7 @@ class LaporanOperasionalHarianForm extends Component
 
         LaporanOperasionalHarian::create($validated);
 
-        session()->flash('message', 'Laporan operasional harian berhasil disimpan.');
+        session()->flash('message', 'Laporan SATPEL UPPKB CEKIK berhasil disimpan.');
 
         $this->resetForm();
     }
