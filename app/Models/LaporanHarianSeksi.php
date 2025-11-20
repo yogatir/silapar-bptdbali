@@ -23,6 +23,25 @@ class LaporanHarianSeksi extends Model
         'tanggal' => 'date',
         'petugas' => 'array',
     ];
+
+    public static function getNamaSeksiList(): array
+    {
+        return config('laporan_seksi.options', []);
+    }
+
+    /**
+     * @return array<int, array{value: string, label: string}>
+     */
+    public static function getNamaSeksiOptions(): array
+    {
+        return collect(self::getNamaSeksiList())
+            ->map(fn (string $nama) => [
+                'value' => $nama,
+                'label' => $nama,
+            ])
+            ->values()
+            ->all();
+    }
 }
 
 

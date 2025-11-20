@@ -19,16 +19,12 @@ class LaporanHarianSeksiForm extends Component
     public $kegiatan = '';
     public $dokumentasiLink = '';
     public $hasilKegiatanLink = '';
-    public array $seksiOptions = [
-        'Tata Usaha',
-        'LLJSDPP',
-        'Sarana AJSDP',
-        'Prasarana LLJSDP',
-    ];
+    public array $seksiOptions = [];
 
     public function mount(): void
     {
         $this->authorizeRole([UserRole::KABALAI, UserRole::SEKSI]);
+        $this->seksiOptions = LaporanHarianSeksi::getNamaSeksiList();
     }
 
     public function addPetugas(): void

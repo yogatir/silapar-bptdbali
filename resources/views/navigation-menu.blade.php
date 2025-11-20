@@ -15,7 +15,7 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    @if (in_array($role, [\App\Enums\UserRole::KABALAI, \App\Enums\UserRole::SEKSI], true))
+                    @if (in_array($role, [\App\Enums\UserRole::KABALAI, \App\Enums\UserRole::SEKSI, \App\Enums\UserRole::SATPEL], true))
                         <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                             {{ __('Dashboard') }}
                         </x-nav-link>
@@ -25,7 +25,7 @@
                             {{ __('Pelabuhan') }}
                         </x-nav-link>
                         <x-nav-link href="{{ route('laporan-operasional-harian.form') }}" :active="request()->routeIs('laporan-operasional-harian.*')">
-                            {{ __('Satuan Pelayanan') }}
+                            {{ __('Laporan UPPKB') }}
                         </x-nav-link>
                         <x-nav-link href="{{ route('terminal.form') }}" :active="request()->routeIs('terminal.*')">
                             {{ __('Terminal') }}
@@ -160,7 +160,7 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-                @if (in_array($role, [\App\Enums\UserRole::KABALAI, \App\Enums\UserRole::SEKSI], true))
+                @if (in_array($role, [\App\Enums\UserRole::KABALAI, \App\Enums\UserRole::SEKSI, \App\Enums\UserRole::SATPEL], true))
                     <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-responsive-nav-link>
@@ -170,7 +170,7 @@
                         {{ __('Pelabuhan') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link href="{{ route('laporan-operasional-harian.form') }}" :active="request()->routeIs('laporan-operasional-harian.*')">
-                        {{ __('Satuan Pelayanan') }}
+                        {{ __('Laporan UPPKB') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link href="{{ route('terminal.form') }}" :active="request()->routeIs('terminal.*')">
                         {{ __('Terminal') }}

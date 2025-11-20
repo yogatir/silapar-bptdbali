@@ -1,11 +1,10 @@
 <?php
 
 use App\Enums\UserRole;
+use App\Http\Controllers\LandingController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return redirect('/login');
-});
+Route::get('/', LandingController::class);
 
 Route::middleware([
     'auth:sanctum',
@@ -14,7 +13,7 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
-    })->middleware('role:' . UserRole::KABALAI . ',' . UserRole::SEKSI)
+    })->middleware('role:' . UserRole::KABALAI . ',' . UserRole::SEKSI . ',' . UserRole::SATPEL)
       ->name('dashboard');
 
     Route::get('/pelabuhan', function () {

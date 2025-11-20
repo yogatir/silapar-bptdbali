@@ -2,7 +2,6 @@
 
 namespace App\Http\Responses;
 
-use App\Enums\UserRole;
 use Illuminate\Http\JsonResponse;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 
@@ -27,10 +26,7 @@ class LoginResponse implements LoginResponseContract
      */
     protected function redirectPath($request): string
     {
-        return match ($request->user()?->role) {
-            UserRole::SATPEL => route('pelabuhan.form'),
-            default => route('dashboard'),
-        };
+        return route('dashboard');
     }
 }
 

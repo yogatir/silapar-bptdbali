@@ -17,6 +17,8 @@
                             Pelabuhan
                         @elseif($primaryFilter === 'terminal')
                             Terminal
+                        @elseif($primaryFilter === 'laporan_harian_seksi')
+                            Nama Seksi
                         @endif
                     </label>
                     <select wire:model.live="secondaryFilter" class="border rounded p-2 w-full">
@@ -36,6 +38,14 @@
                             @foreach($terminalOptions as $terminal)
                                 <option value="{{ $terminal['value'] }}">{{ $terminal['label'] }}</option>
                             @endforeach
+                        @elseif($primaryFilter === 'laporan_harian_seksi')
+                            <option value="">Semua Seksi</option>
+                            @php
+                                $seksiOptions = \App\Models\LaporanHarianSeksi::getNamaSeksiOptions();
+                            @endphp
+                            @foreach($seksiOptions as $seksi)
+                                <option value="{{ $seksi['value'] }}">{{ $seksi['label'] }}</option>
+                            @endforeach
                         @endif
                     </select>
                 </div>
@@ -54,13 +64,11 @@
                 @break
 
             @case('laporan_harian_seksi')
-                @livewire('laporan-harian-seksi-table', key('laporan-harian-seksi-table'))
+                @livewire('laporan-harian-seksi-table', ['filterNamaSeksi' => $secondaryFilter], key('laporan-harian-seksi-table-' . $secondaryFilter))
                 @break
 
-            @case('laporan_personal_harian')
-                <div class="p-6 text-sm text-gray-700">
-                    Laporan Personal Harian belum tersedia.
-                </div>
+            @case('laporan_operasional_harian')
+                @livewire('laporan-operasional-harian-table', key('laporan-operasional-harian-table'))
                 @break
 
             @default

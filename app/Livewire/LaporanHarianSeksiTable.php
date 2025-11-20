@@ -10,12 +10,30 @@ class LaporanHarianSeksiTable extends Component
 {
     use WithPagination;
 
+    public string $filterNamaSeksi = '';
+
+    public function mount(string $filterNamaSeksi = ''): void
+    {
+        $validOptions = LaporanHarianSeksi::getNamaSeksiList();
+        $this->filterNamaSeksi = in_array($filterNamaSeksi, $validOptions, true) ? $filterNamaSeksi : '';
+    }
+
+    public function updatedFilterNamaSeksi(): void
+    {
+        $this->resetPage();
+    }
+
     public function getRecordsProperty()
     {
-        return LaporanHarianSeksi::query()
+        $query = LaporanHarianSeksi::query()
             ->orderByDesc('tanggal')
-            ->orderByDesc('created_at')
-            ->paginate(50);
+            ->orderByDesc('created_at');
+
+        if ($this->filterNamaSeksi !== '') {
+            $query->where('nama_seksi', $this->filterNamaSeksi);
+        }
+
+        return $query->paginate(50);
     }
 
     public function render()

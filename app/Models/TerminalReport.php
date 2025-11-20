@@ -29,9 +29,7 @@ class TerminalReport extends Model
 
     public static function getTerminalOptions(): array
     {
-        $terminals = [
-            'Terminal Mengwi',
-        ];
+        $terminals = config('terminal.options', []);
 
         return collect($terminals)->map(fn ($terminal) => [
             'value' => $terminal,
