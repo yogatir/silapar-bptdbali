@@ -1,4 +1,9 @@
 <x-guest-layout>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
     <div class="relative bg-gradient-to-b from-blue-900 via-blue-800 to-blue-700 text-white">
         <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/graphy.png')] opacity-10"></div>
         <header class="relative z-10 max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -19,7 +24,7 @@
                     </a>
                 @else
                     <a href="{{ route('login') }}" class="px-4 py-2 bg-white text-blue-900 font-semibold rounded-lg shadow hover:bg-blue-50 transition">
-                        Masuk
+                        Log in
                     </a>
                 @endauth
             </div>
@@ -51,10 +56,6 @@
                     <div class="bg-white/10 rounded-xl p-4">
                         <dt class="text-sm text-blue-200 uppercase tracking-widest">Aktivitas Terminal</dt>
                         <dd class="text-3xl font-bold mt-2">{{ number_format($stats['terminal_total']) }}</dd>
-                    </div>
-                    <div class="bg-white/10 rounded-xl p-4 col-span-2">
-                        <dt class="text-sm text-blue-200 uppercase tracking-widest">Laporan Seksi</dt>
-                        <dd class="text-3xl font-bold mt-2">{{ number_format($stats['seksi_total']) }}</dd>
                     </div>
                 </dl>
             </div>
@@ -136,10 +137,10 @@
                     </p>
                 </div>
                 <div class="bg-white rounded-2xl p-6 shadow border border-gray-100">
-                    <h3 class="font-semibold text-lg text-gray-900">Laporan Seksi</h3>
+                    <h3 class="font-semibold text-lg text-gray-900">Jembatan Timbang (UPPKB)</h3>
                     <p class="mt-3 text-gray-600 text-sm leading-relaxed">
-                        Dokumentasi kegiatan lapangan oleh setiap seksi menunjukkan kesiapsiagaan
-                        dan program pembinaan transportasi darat.
+                        Pemeriksaan kendaraan dan penindakan pelanggaran melalui jembatan timbang
+                        untuk memastikan keselamatan dan kepatuhan regulasi transportasi.
                     </p>
                 </div>
             </div>
@@ -175,16 +176,6 @@
                     </div>
                     <div class="mt-4">
                         @livewire('terminal-table')
-                    </div>
-                </div>
-
-                <div class="bg-gray-50 rounded-3xl border border-gray-200 shadow-sm">
-                    <div class="px-6 pt-6">
-                        <h3 class="text-xl font-semibold text-gray-900">Laporan Harian Seksi</h3>
-                        <p class="text-gray-600 text-sm mt-1">Dokumentasi kegiatan lapangan oleh masing-masing seksi.</p>
-                    </div>
-                    <div class="mt-4">
-                        @livewire('laporan-harian-seksi-table')
                     </div>
                 </div>
 
