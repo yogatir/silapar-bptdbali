@@ -10,12 +10,32 @@ class LaporanOperasionalHarianTable extends Component
 {
     use WithPagination;
 
+    public string $selectedDate = '';
+
+    protected $listeners = ['dateChanged' => 'updateSelectedDate'];
+
+    public function mount(string $selectedDate = ''): void
+    {
+        $this->selectedDate = $selectedDate;
+    }
+    
+    public function updateSelectedDate($date): void
+    {
+        $this->selectedDate = $date;
+        $this->resetPage();
+    }
+
     public function getRecordsProperty()
     {
-        return LaporanOperasionalHarian::query()
+        $query = LaporanOperasionalHarian::query()
             ->orderByDesc('tanggal')
-            ->orderByDesc('created_at')
-            ->paginate(25);
+            ->orderByDesc('created_at');
+            
+        if (!empty($this->selectedDate)) {
+            $query->whereDate('tanggal', $this->selectedDate);
+        }
+
+        return $query->paginate(25);
     }
 
     public function render()

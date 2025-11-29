@@ -11,10 +11,20 @@ class TerminalTable extends Component
     use WithPagination;
 
     public $filterTerminal = '';
+    public $selectedDate = '';
 
-    public function mount($filterTerminal = '')
+    protected $listeners = ['dateChanged' => 'updateSelectedDate'];
+
+    public function mount($filterTerminal = '', $selectedDate = '')
     {
         $this->filterTerminal = $filterTerminal;
+        $this->selectedDate = $selectedDate;
+    }
+    
+    public function updateSelectedDate($date)
+    {
+        $this->selectedDate = $date;
+        $this->resetPage();
     }
 
     public function updatedFilterTerminal()
@@ -30,6 +40,10 @@ class TerminalTable extends Component
 
         if ($this->filterTerminal) {
             $query->where('terminal', $this->filterTerminal);
+        }
+        
+        if (!empty($this->selectedDate)) {
+            $query->whereDate('tanggal', $this->selectedDate);
         }
 
         return $query->paginate(50);

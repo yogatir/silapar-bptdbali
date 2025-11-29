@@ -23,7 +23,7 @@ class TerminalForm extends Component
 
     public function mount(): void
     {
-        $this->authorizeRole([UserRole::KABALAI, UserRole::SATPEL]);
+        $this->authorizeRole([UserRole::ADMIN, UserRole::SATPEL]);
 
         $this->terminalOptions = TerminalReport::getTerminalOptions();
     }

@@ -19,6 +19,12 @@ class AdminUserSeeder extends Seeder
                 'email' => 'admin@bptdbali.com',
                 'name' => 'Administrator',
                 'password' => 'admin',
+                'role' => UserRole::ADMIN,
+            ],
+            [
+                'email' => 'kabalai@bptdbali.com',
+                'name' => 'Kabalai',
+                'password' => 'kabalai123',
                 'role' => UserRole::KABALAI,
             ],
             [

@@ -23,7 +23,7 @@ class LaporanHarianSeksiForm extends Component
 
     public function mount(): void
     {
-        $this->authorizeRole([UserRole::KABALAI, UserRole::SEKSI]);
+        $this->authorizeRole([UserRole::ADMIN, UserRole::SEKSI]);
         $this->seksiOptions = LaporanHarianSeksi::getNamaSeksiList();
     }
 

@@ -27,7 +27,7 @@ class PelabuhanForm extends Component
 
     public function mount()
     {
-        $this->authorizeRole([UserRole::KABALAI, UserRole::SATPEL]);
+        $this->authorizeRole([UserRole::ADMIN, UserRole::SATPEL]);
 
         $this->pelabuhanConfig = Pelabuhan::getPelabuhanConfig();
     }

@@ -11,11 +11,21 @@ class LaporanHarianSeksiTable extends Component
     use WithPagination;
 
     public string $filterNamaSeksi = '';
+    public string $selectedDate = '';
 
-    public function mount(string $filterNamaSeksi = ''): void
+    protected $listeners = ['dateChanged' => 'updateSelectedDate'];
+
+    public function mount(string $filterNamaSeksi = '', string $selectedDate = ''): void
     {
         $validOptions = LaporanHarianSeksi::getNamaSeksiList();
         $this->filterNamaSeksi = in_array($filterNamaSeksi, $validOptions, true) ? $filterNamaSeksi : '';
+        $this->selectedDate = $selectedDate;
+    }
+    
+    public function updateSelectedDate($date): void
+    {
+        $this->selectedDate = $date;
+        $this->resetPage();
     }
 
     public function updatedFilterNamaSeksi(): void
@@ -31,6 +41,10 @@ class LaporanHarianSeksiTable extends Component
 
         if ($this->filterNamaSeksi !== '') {
             $query->where('nama_seksi', $this->filterNamaSeksi);
+        }
+        
+        if (!empty($this->selectedDate)) {
+            $query->whereDate('tanggal', $this->selectedDate);
         }
 
         return $query->paginate(50);

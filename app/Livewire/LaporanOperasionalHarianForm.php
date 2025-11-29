@@ -56,7 +56,7 @@ class LaporanOperasionalHarianForm extends Component
 
     public function mount(): void
     {
-        $this->authorizeRole([UserRole::KABALAI, UserRole::SATPEL]);
+        $this->authorizeRole([UserRole::ADMIN, UserRole::SATPEL]);
     }
 
     protected function rules(): array

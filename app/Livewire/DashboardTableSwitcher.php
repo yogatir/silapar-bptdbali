@@ -11,10 +11,12 @@ class DashboardTableSwitcher extends Component
     public string $primaryFilter = 'pelabuhan';
     public string $secondaryFilter = '';
     public string $userRole;
+    public $selectedDate;
 
     public function mount(): void
     {
         $this->userRole = Auth::user()->role;
+        $this->selectedDate = ''; // Empty by default to show all records
     }
 
     public function updatedPrimaryFilter(): void
@@ -59,11 +61,38 @@ class DashboardTableSwitcher extends Component
         return collect($options)->contains(fn ($option) => $option['value'] === $this->primaryFilter);
     }
 
+    public function updatedSelectedDate($value)
+    {
+        $this->validate([
+            'selectedDate' => 'nullable|date|before_or_equal:today',
+        ]);
+        
+        // Reset the page when date changes
+        $this->resetPage();
+        
+        // Emit an event to let the tables know the date has changed
+        $this->dispatch('dateChanged', date: $this->selectedDate);
+    }
+    
+    public function clearDate()
+    {
+        $this->selectedDate = '';
+        $this->resetPage();
+        $this->dispatch('dateChanged', date: '');
+    }
+
     public function render()
     {
         return view('livewire.dashboard-table-switcher', [
             'primaryOptions' => $this->getPrimaryOptions(),
         ]);
+    }
+    
+    public function resetPage()
+    {
+        // This is a helper method to reset the page when filters change
+        // The actual pagination reset is handled by the table components
+        $this->dispatch('resetPage');
     }
 }
 

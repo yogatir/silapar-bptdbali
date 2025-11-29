@@ -15,12 +15,12 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    @if (in_array($role, [\App\Enums\UserRole::KABALAI, \App\Enums\UserRole::SEKSI, \App\Enums\UserRole::SATPEL], true))
+                    @if (in_array($role, [\App\Enums\UserRole::ADMIN, \App\Enums\UserRole::KABALAI, \App\Enums\UserRole::SEKSI, \App\Enums\UserRole::SATPEL], true))
                         <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                             {{ __('Dashboard') }}
                         </x-nav-link>
                     @endif
-                    @if (in_array($role, [\App\Enums\UserRole::KABALAI, \App\Enums\UserRole::SATPEL], true))
+                    @if (in_array($role, [\App\Enums\UserRole::ADMIN, \App\Enums\UserRole::SATPEL], true))
                         <x-nav-link href="{{ route('pelabuhan.form') }}" :active="request()->routeIs('pelabuhan.*')">
                             {{ __('Pelabuhan') }}
                         </x-nav-link>
@@ -31,7 +31,7 @@
                             {{ __('Terminal') }}
                         </x-nav-link>
                     @endif
-                    @if (in_array($role, [\App\Enums\UserRole::KABALAI, \App\Enums\UserRole::SEKSI], true))
+                    @if (in_array($role, [\App\Enums\UserRole::ADMIN, \App\Enums\UserRole::SEKSI], true))
                         <x-nav-link href="{{ route('laporan-harian-seksi.form') }}" :active="request()->routeIs('laporan-harian-seksi.*')">
                             {{ __('Laporan Harian Seksi') }}
                         </x-nav-link>
@@ -160,12 +160,12 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-                @if (in_array($role, [\App\Enums\UserRole::KABALAI, \App\Enums\UserRole::SEKSI, \App\Enums\UserRole::SATPEL], true))
+                @if (in_array($role, [\App\Enums\UserRole::ADMIN, \App\Enums\UserRole::KABALAI, \App\Enums\UserRole::SEKSI, \App\Enums\UserRole::SATPEL], true))
                     <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-responsive-nav-link>
                 @endif
-                @if (in_array($role, [\App\Enums\UserRole::KABALAI, \App\Enums\UserRole::SATPEL], true))
+                @if (in_array($role, [\App\Enums\UserRole::ADMIN, \App\Enums\UserRole::SATPEL], true))
                     <x-responsive-nav-link href="{{ route('pelabuhan.form') }}" :active="request()->routeIs('pelabuhan.*')">
                         {{ __('Pelabuhan') }}
                     </x-responsive-nav-link>
@@ -176,7 +176,7 @@
                         {{ __('Terminal') }}
                     </x-responsive-nav-link>
                 @endif
-                @if (in_array($role, [\App\Enums\UserRole::KABALAI, \App\Enums\UserRole::SEKSI], true))
+                @if (in_array($role, [\App\Enums\UserRole::ADMIN, \App\Enums\UserRole::SEKSI], true))
                     <x-responsive-nav-link href="{{ route('laporan-harian-seksi.form') }}" :active="request()->routeIs('laporan-harian-seksi.*')">
                         {{ __('Laporan Harian Seksi') }}
                     </x-responsive-nav-link>

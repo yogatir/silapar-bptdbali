@@ -11,10 +11,20 @@ class PelabuhanTable extends Component
     use WithPagination;
 
     public $filterPelabuhan = '';
+    public $selectedDate = '';
 
-    public function mount($filterPelabuhan = '')
+    protected $listeners = ['dateChanged' => 'updateSelectedDate'];
+
+    public function mount($filterPelabuhan = '', $selectedDate = '')
     {
         $this->filterPelabuhan = $filterPelabuhan;
+        $this->selectedDate = $selectedDate;
+    }
+    
+    public function updateSelectedDate($date)
+    {
+        $this->selectedDate = $date;
+        $this->resetPage();
     }
 
     public function updatedFilterPelabuhan()
@@ -31,6 +41,10 @@ class PelabuhanTable extends Component
         if ($this->filterPelabuhan) {
             $query->where('pelabuhan', $this->filterPelabuhan);
         }
+        
+        if (!empty($this->selectedDate)) {
+            $query->whereDate('tanggal', $this->selectedDate);
+        }
 
         return $query->paginate(50);
     }
@@ -41,6 +55,10 @@ class PelabuhanTable extends Component
 
         if ($this->filterPelabuhan) {
             $query->where('pelabuhan', $this->filterPelabuhan);
+        }
+        
+        if (!empty($this->selectedDate)) {
+            $query->whereDate('tanggal', $this->selectedDate);
         }
 
         $aggregates = (clone $query)
