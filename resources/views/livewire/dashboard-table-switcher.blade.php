@@ -1,9 +1,9 @@
-<div class="p-6">
-    <div class="mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="p-8">
+    <div class="mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Laporan</label>
-                <select wire:model.live="primaryFilter" class="border rounded p-2 w-full">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Jenis Laporan</label>
+                <select wire:model.live="primaryFilter" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                     @foreach($primaryOptions as $option)
                         <option value="{{ $option['value'] }}">{{ $option['label'] }}</option>
                     @endforeach
@@ -12,7 +12,7 @@
 
             @if($this->showSecondaryFilter)
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
                         @if($primaryFilter === 'pelabuhan')
                             Pelabuhan
                         @elseif($primaryFilter === 'terminal')
@@ -21,7 +21,7 @@
                             Nama Seksi
                         @endif
                     </label>
-                    <select wire:model.live="secondaryFilter" class="border rounded p-2 w-full">
+                    <select wire:model.live="secondaryFilter" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                         @if($primaryFilter === 'pelabuhan')
                             <option value="">Semua Pelabuhan</option>
                             @php
@@ -53,7 +53,7 @@
         </div>
     </div>
 
-    <div class="bg-white shadow rounded">
+    <div class="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden">
         @switch($primaryFilter)
             @case('terminal')
                 @livewire('terminal-table', ['filterTerminal' => $secondaryFilter], key('terminal-table-' . $secondaryFilter))
@@ -72,8 +72,8 @@
                 @break
 
             @default
-                <div class="p-6 text-sm text-gray-700">
-                    Pilih jenis laporan untuk melihat data.
+                <div class="p-8 text-center text-gray-500">
+                    <p class="text-lg">Pilih jenis laporan untuk melihat data.</p>
                 </div>
         @endswitch
     </div>

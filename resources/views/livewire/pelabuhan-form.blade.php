@@ -1,43 +1,41 @@
-<div class="p-6 max-w-4xl mx-auto">
-    <h1 class="text-2xl font-bold mb-4">Input Data Pelabuhan</h1>
-
+<div class="p-8">
     @if (session()->has('message'))
-        <div class="bg-green-100 text-green-800 p-2 rounded mb-4">
-            {{ session('message') }}
+        <div class="mb-6 bg-green-50 border-l-4 border-green-400 text-green-700 p-4 rounded-lg">
+            <p class="font-medium">{{ session('message') }}</p>
         </div>
     @endif
 
     @if (session()->has('error'))
-        <div class="bg-red-100 text-red-800 p-2 rounded mb-4">
-            {{ session('error') }}
+        <div class="mb-6 bg-red-50 border-l-4 border-red-400 text-red-700 p-4 rounded-lg">
+            <p class="font-medium">{{ session('error') }}</p>
         </div>
     @endif
 
-    <form wire:submit.prevent="save" class="space-y-4">
+    <form wire:submit.prevent="save" class="space-y-6">
         {{-- Tanggal and Waktu in the same row --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-                <label class="block text-sm font-medium">Tanggal</label>
-                <input type="date" wire:model="tanggal" class="w-full border rounded p-2">
-                @error('tanggal') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Tanggal</label>
+                <input type="date" wire:model="tanggal" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                @error('tanggal') <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span> @enderror
             </div>
 
             <div>
-                <label class="block text-sm font-medium">Waktu</label>
-                <input type="time" wire:model="waktu" class="w-full border rounded p-2">
-                @error('waktu') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Waktu</label>
+                <input type="time" wire:model="waktu" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                @error('waktu') <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span> @enderror
             </div>
         </div>
 
         <div>
-            <label class="block text-sm font-medium">Pelabuhan</label>
-            <select wire:model.live="pelabuhan" class="w-full border rounded p-2">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Pelabuhan</label>
+            <select wire:model.live="pelabuhan" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                 <option value="">-- Pilih Pelabuhan --</option>
                 @foreach($this->pelabuhanList as $pel)
                     <option value="{{ $pel['value'] }}">{{ $pel['label'] }}</option>
                 @endforeach
             </select>
-            @error('pelabuhan') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+            @error('pelabuhan') <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span> @enderror
         </div>
 
         @if($pelabuhan && $currentPelabuhanConfig)
@@ -151,8 +149,8 @@
         @endif
 
         @if($pelabuhan && $currentPelabuhanConfig)
-            <div class="pt-4">
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+            <div class="pt-6 border-t border-gray-200">
+                <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all">
                     Simpan Data
                 </button>
             </div>

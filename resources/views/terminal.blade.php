@@ -1,13 +1,20 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Laporan Terminal') }}
-        </h2>
+        <div class="relative bg-gradient-to-b from-blue-900 via-blue-800 to-blue-700 text-white py-8">
+            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/graphy.png')] opacity-10"></div>
+            <div class="relative z-10 max-w-7xl mx-auto px-6">
+                <p class="text-sm uppercase tracking-[0.3em] text-blue-200">Input Data</p>
+                <h2 class="mt-2 text-3xl font-bold">{{ __('Laporan Terminal') }}</h2>
+                <p class="mt-2 text-blue-100">Catat aktivitas kedatangan dan keberangkatan terminal</p>
+            </div>
+        </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="bg-gray-50 py-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
             @livewire('terminal-form')
+            </div>
         </div>
     </div>
 </x-app-layout>
