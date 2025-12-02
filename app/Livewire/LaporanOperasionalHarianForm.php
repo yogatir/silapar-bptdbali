@@ -11,6 +11,10 @@ class LaporanOperasionalHarianForm extends Component
 {
     use AuthorizesRole;
 
+    public $recordId = null;
+    public $editingId = null;
+    public $isEditing = false;
+    
     public $tanggal;
     public $waktu;
 
@@ -54,9 +58,39 @@ class LaporanOperasionalHarianForm extends Component
     public $kendala = '';
     public $catatan = '';
 
-    public function mount(): void
+    public function mount($recordId = null): void
     {
         $this->authorizeRole([UserRole::ADMIN, UserRole::SATPEL]);
+        
+        $this->recordId = $recordId;
+        $this->editingId = $recordId;
+        $this->isEditing = !is_null($recordId);
+        
+        if ($this->isEditing) {
+            $this->loadRecord();
+        }
+    }
+    
+    protected function loadRecord(): void
+    {
+        $record = \App\Models\LaporanOperasionalHarian::findOrFail($this->editingId);
+        
+        // Map all fillable attributes to component properties
+        foreach ($record->toArray() as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->$key = $value;
+            }
+        }
+        
+        // Format the date for the input field (YYYY-MM-DD)
+        if ($this->tanggal) {
+            $this->tanggal = \Carbon\Carbon::parse($this->tanggal)->format('Y-m-d');
+        }
+        
+        // Format the time if it exists
+        if ($this->waktu) {
+            $this->waktu = \Carbon\Carbon::parse($this->waktu)->format('H:i');
+        }
     }
 
     protected function rules(): array
@@ -113,23 +147,40 @@ class LaporanOperasionalHarianForm extends Component
         ];
     }
 
-    public function save(): void
+    public function save()
     {
-        $validated = $this->validate();
-
-        foreach ($this->integerFields() as $field) {
-            $validated[$field] = is_null($validated[$field] ?? null)
-                ? 0
-                : (int) $validated[$field];
+        $this->validate();
+        
+        $data = $this->only([
+            'tanggal', 'waktu',
+            'jumlah_kendaraan_masuk', 'jumlah_kendaraan_keluar',
+            'manual_masuk', 'jto_masuk', 'manual_keluar', 'jto_keluar',
+            'jumlah_diperiksa', 'jumlah_melanggar', 'jumlah_tidak_melanggar',
+            'pelanggaran_daya_angkut', 'pelanggaran_tcm', 'pelanggaran_dokumen',
+            'pelanggaran_dimensi', 'pelanggaran_teknis',
+            'tindakan_peringatan', 'tindakan_tilang', 'tindakan_transfer_muatan',
+            'tindakan_putar_balik', 'tindakan_tunda_berangkat',
+            'tindakan_surat_tilang', 'tindakan_serah_polisi', 'tindakan_proses_etilang',
+            'denda', 'kecelakaan_lalu_lintas', 'jumlah_sdm', 'sdm_ppns',
+            'sdm_danru', 'sdm_pkb', 'sdm_ppkb', 'sdm_pelaporan_jto', 'sdm_petugas_lalin',
+            'arus_lalu_lintas', 'cuaca', 'jumlah_responden_skm', 'kendala', 'catatan'
+        ]);
+        
+        if ($this->isEditing) {
+            // Update existing record
+            $record = LaporanOperasionalHarian::findOrFail($this->editingId);
+            $record->update($data);
+            
+            session()->flash('message', 'Laporan UPPKB berhasil diperbarui');
+        } else {
+            // Create new record
+            LaporanOperasionalHarian::create($data);
+            
+            session()->flash('message', 'Laporan UPPKB berhasil disimpan');
+            $this->resetForm();
         }
-
-        $validated['denda'] = (float) ($validated['denda'] ?? 0);
-
-        LaporanOperasionalHarian::create($validated);
-
-        session()->flash('message', 'Laporan UPPKB berhasil disimpan.');
-
-        $this->resetForm();
+        
+        return redirect()->route('laporan-operasional-harian.form');
     }
 
     protected function resetForm(): void

@@ -98,10 +98,12 @@
                 @break
 
             @case('pelabuhan')
-                @livewire('pelabuhan-table', [
-    'filterPelabuhan' => $secondaryFilter,
-    'selectedDate' => $selectedDate
-], key('pelabuhan-table-' . $secondaryFilter))
+                <div>
+                    @livewire('pelabuhan-table', [
+                        'filterPelabuhan' => $secondaryFilter,
+                        'selectedDate' => $selectedDate
+                    ], key('pelabuhan-table-' . $secondaryFilter . '-' . ($selectedDate ?? 'all')))
+                </div>
                 @break
 
             @case('laporan_harian_seksi')

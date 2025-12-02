@@ -18,14 +18,35 @@ class TerminalForm extends Component
     public $kedatangan_penumpang = 0;
     public $keberangkatan_armada = 0;
     public $keberangkatan_penumpang = 0;
+    public $recordId = null;
+    public $editingId = null;
 
     public array $terminalOptions = [];
 
-    public function mount(): void
+    public function mount($recordId = null): void
     {
         $this->authorizeRole([UserRole::ADMIN, UserRole::SATPEL]);
-
+        
+        $this->recordId = $recordId;
+        $this->editingId = $recordId;
         $this->terminalOptions = TerminalReport::getTerminalOptions();
+        
+        if ($recordId) {
+            $this->loadRecord($recordId);
+        }
+    }
+    
+    public function loadRecord($id)
+    {
+        $record = TerminalReport::findOrFail($id);
+        
+        $this->tanggal = $record->tanggal->format('Y-m-d');
+        $this->waktu = $record->waktu;
+        $this->terminal = $record->terminal;
+        $this->kedatangan_armada = $record->kedatangan_armada;
+        $this->kedatangan_penumpang = $record->kedatangan_penumpang;
+        $this->keberangkatan_armada = $record->keberangkatan_armada;
+        $this->keberangkatan_penumpang = $record->keberangkatan_penumpang;
     }
 
     protected function rules(): array
@@ -41,13 +62,19 @@ class TerminalForm extends Component
         ];
     }
 
-    public function save(): void
+    public function save()
     {
         $validated = $this->validate();
 
-        TerminalReport::create($validated);
-
-        session()->flash('message', 'Laporan terminal berhasil disimpan.');
+        if ($this->recordId) {
+            $record = TerminalReport::findOrFail($this->recordId);
+            $record->update($validated);
+            session()->flash('message', 'Data terminal berhasil diperbarui.');
+            return redirect()->route('terminal.form');
+        } else {
+            TerminalReport::create($validated);
+            session()->flash('message', 'Laporan terminal berhasil disimpan.');
+        }
 
         $this->reset([
             'tanggal',

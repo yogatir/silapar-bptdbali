@@ -12,7 +12,8 @@
                 <input
                     type="text"
                     wire:model.lazy="noSt"
-                    class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    @if($isEditing) readonly @endif
+                    class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition @if($isEditing) bg-gray-100 @endif"
                 >
                 @error('noSt') <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span> @enderror
             </div>

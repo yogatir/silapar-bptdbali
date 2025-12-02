@@ -21,28 +21,61 @@ class PelabuhanForm extends Component
     public $roda2;
     public $roda4Penumpang;
     public $roda4Barang;
+    public $editingId = null;
+    public $recordId = null;
 
     public $pelabuhanConfig = [];
     public $currentPelabuhanConfig = null;
 
-    public function mount()
+    protected $listeners = ['editPelabuhan' => 'loadRecord'];
+
+    public function mount($recordId = null)
     {
         $this->authorizeRole([UserRole::ADMIN, UserRole::SATPEL]);
-
         $this->pelabuhanConfig = Pelabuhan::getPelabuhanConfig();
+        
+        if ($recordId) {
+            $this->loadRecord($recordId);
+        }
+    }
+    
+    public function loadRecord($id = null)
+    {
+        $this->resetForm();
+        
+        if ($id) {
+            $record = Pelabuhan::findOrFail($id);
+            $this->editingId = $id;
+            $this->tanggal = $record->tanggal->format('Y-m-d');
+            $this->waktu = $record->waktu;
+            $this->pelabuhan = $record->pelabuhan;
+            $this->kapalOperasi = $record->kapal_operasi;
+            $this->trip = $record->trip;
+            $this->penumpang = $record->penumpang;
+            $this->roda2 = $record->roda_2;
+            $this->roda4Penumpang = $record->roda_4_penumpang;
+            $this->roda4Barang = $record->roda_4_barang;
+            $this->dermaga = $record->dermaga ?? [];
+            
+            // Trigger the updatedPelabuhan event to load dermaga config
+            $this->updatedPelabuhan($this->pelabuhan);
+        }
     }
 
     public function updatedPelabuhan($value)
     {
         if ($value && isset($this->pelabuhanConfig[$value])) {
             $this->currentPelabuhanConfig = $this->pelabuhanConfig[$value];
-            // Initialize dermaga structure from configuration
-            $this->dermaga = collect($this->currentPelabuhanConfig['dermaga'])->map(function ($dermaga) {
-                return [
-                    'nama' => $dermaga['nama'],
-                    'kapal' => []
-                ];
-            })->toArray();
+            
+            // Only initialize dermaga if it's empty or not set
+            if (empty($this->dermaga)) {
+                $this->dermaga = collect($this->currentPelabuhanConfig['dermaga'])->map(function ($dermaga) {
+                    return [
+                        'nama' => $dermaga['nama'],
+                        'kapal' => []
+                    ];
+                })->toArray();
+            }
         } else {
             $this->currentPelabuhanConfig = null;
             $this->dermaga = [];
@@ -86,7 +119,7 @@ class PelabuhanForm extends Component
 
         $this->validate($rules);
 
-        Pelabuhan::create([
+        $data = [
             'tanggal' => $this->tanggal,
             'waktu' => $this->waktu,
             'pelabuhan' => $this->pelabuhan,
@@ -97,13 +130,19 @@ class PelabuhanForm extends Component
             'roda_4_penumpang' => $this->roda4Penumpang ?? 0,
             'roda_4_barang' => $this->roda4Barang ?? 0,
             'dermaga' => $this->dermaga ?? [],
-        ]);
+        ];
 
-        session()->flash('message', 'Data berhasil disimpan!');
-        
-        // Reset form
-        $this->reset(['tanggal', 'waktu', 'pelabuhan', 'dermaga', 'kapalOperasi', 'trip', 'penumpang', 'roda2', 'roda4Penumpang', 'roda4Barang']);
-        $this->currentPelabuhanConfig = null;
+        if ($this->editingId) {
+            $record = Pelabuhan::findOrFail($this->editingId);
+            $record->update($data);
+            $message = 'Data berhasil diperbarui!';
+        } else {
+            Pelabuhan::create($data);
+            $message = 'Data berhasil disimpan!';
+        }
+
+        session()->flash('message', $message);
+        $this->resetForm();
     }
 
     public function getPelabuhanListProperty()
@@ -114,6 +153,32 @@ class PelabuhanForm extends Component
                 'label' => $config['nama'],
             ];
         })->values()->toArray();
+    }
+    
+    public function resetForm()
+    {
+        $this->reset([
+            'editingId',
+            'tanggal',
+            'waktu',
+            'pelabuhan',
+            'dermaga',
+            'kapalOperasi',
+            'trip',
+            'penumpang',
+            'roda2',
+            'roda4Penumpang',
+            'roda4Barang',
+            'currentPelabuhanConfig'
+        ]);
+        
+        // Reset validation errors
+        $this->resetValidation();
+        
+        // Emit event to parent component to reset editing state
+        if ($this->editingId) {
+            $this->dispatch('cancelEdit');
+        }
     }
 
     public function render()

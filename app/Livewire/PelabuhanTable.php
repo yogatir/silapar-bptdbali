@@ -11,6 +11,7 @@ class PelabuhanTable extends Component
     use WithPagination;
 
     public $filterPelabuhan = '';
+    public $editingId = null;
     public $selectedDate = '';
 
     protected $listeners = ['dateChanged' => 'updateSelectedDate'];
@@ -150,6 +151,33 @@ class PelabuhanTable extends Component
                 'total_kendaraan' => (int) $aggregates->max_total_kendaraan,
             ],
         ];
+    }
+
+    public function edit($id)
+    {
+        $this->editingId = $id;
+        $this->dispatch('editPelabuhan', id: $id);
+    }
+
+    public function cancelEdit()
+    {
+        $this->editingId = null;
+    }
+
+    public function updatedEditingId($value)
+    {
+        if (!$value) {
+            $this->resetPage();
+        }
+    }
+
+    public function delete($id)
+    {
+        $record = Pelabuhan::findOrFail($id);
+        $record->delete();
+        
+        session()->flash('message', 'Data berhasil dihapus!');
+        $this->resetPage();
     }
 
     public function render()

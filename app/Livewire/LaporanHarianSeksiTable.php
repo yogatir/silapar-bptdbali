@@ -2,7 +2,9 @@
 
 namespace App\Livewire;
 
+use App\Enums\UserRole;
 use App\Models\LaporanHarianSeksi;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -12,8 +14,12 @@ class LaporanHarianSeksiTable extends Component
 
     public string $filterNamaSeksi = '';
     public string $selectedDate = '';
+    public $editingId = null;
 
-    protected $listeners = ['dateChanged' => 'updateSelectedDate'];
+    protected $listeners = [
+        'dateChanged' => 'updateSelectedDate',
+        'refresh' => '$refresh'
+    ];
 
     public function mount(string $filterNamaSeksi = '', string $selectedDate = ''): void
     {
@@ -31,6 +37,35 @@ class LaporanHarianSeksiTable extends Component
     public function updatedFilterNamaSeksi(): void
     {
         $this->resetPage();
+    }
+    
+    public function edit($id)
+    {
+        $this->editingId = $id;
+        $this->dispatch('editLaporanHarianSeksi', id: $id);
+    }
+    
+    public function delete($id = null)
+    {
+        try {
+            $record = LaporanHarianSeksi::findOrFail($id);
+            $record->delete();
+            
+            $this->dispatch('notify', [
+                'type' => 'success',
+                'message' => 'Data berhasil dihapus',
+            ]);
+            
+            // Refresh the table
+            $this->resetPage();
+            $this->dispatch('refresh');
+            
+        } catch (\Exception $e) {
+            $this->dispatch('notify', [
+                'type' => 'error',
+                'message' => 'Gagal menghapus data: ' . $e->getMessage(),
+            ]);
+        }
     }
 
     public function getRecordsProperty()
