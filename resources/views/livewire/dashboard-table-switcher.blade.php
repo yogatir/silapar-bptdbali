@@ -1,22 +1,43 @@
 <div class="p-8">
     <div class="mb-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <!-- Date Picker -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <!-- Start Date -->
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Pilih Tanggal</label>
+                <label for="startDate" class="block text-sm font-semibold text-gray-700 mb-2">Tanggal Mulai</label>
+                <div class="relative">
+                    <input 
+                        type="date" 
+                        id="startDate"
+                        wire:model.live="startDate"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                        max="{{ $maxDate }}"
+                        @if($endDate) max="{{ $endDate }}" @endif
+                        placeholder="Tanggal Mulai"
+                    >
+                    @error('startDate')
+                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <!-- End Date -->
+            <div>
+                <label for="endDate" class="block text-sm font-semibold text-gray-700 mb-2">Tanggal Akhir</label>
                 <div class="relative">
                     <div class="relative">
                         <input 
                             type="date" 
-                            wire:model.live="selectedDate"
+                            id="endDate"
+                            wire:model.live="endDate"
                             class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition pr-10"
-                            max="{{ now()->format('Y-m-d') }}"
-                            placeholder="Pilih tanggal (kosongkan untuk semua data)"
+                            @if($startDate) min="{{ $startDate }}" @endif
+                            max="{{ $maxDate }}"
+                            placeholder="Tanggal Akhir"
                         >
-                        @if($selectedDate)
+                        @if($startDate || $endDate !== now()->format('Y-m-d'))
                             <button 
                                 type="button" 
-                                wire:click="clearDate"
+                                wire:click="clearDates"
                                 class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 transition-colors"
                                 title="Hapus filter tanggal"
                             >
@@ -26,7 +47,7 @@
                             </button>
                         @endif
                     </div>
-                    @error('selectedDate')
+                    @error('endDate')
                         <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
@@ -93,30 +114,34 @@
             @case('terminal')
                 @livewire('terminal-table', [
     'filterTerminal' => $secondaryFilter,
-    'selectedDate' => $selectedDate
-], key('terminal-table-' . $secondaryFilter))
+    'startDate' => $startDate,
+    'endDate' => $endDate
+], key('terminal-table-' . $secondaryFilter . '-' . ($startDate ?? '') . '-' . ($endDate ?? '')))
                 @break
 
             @case('pelabuhan')
                 <div>
                     @livewire('pelabuhan-table', [
                         'filterPelabuhan' => $secondaryFilter,
-                        'selectedDate' => $selectedDate
-                    ], key('pelabuhan-table-' . $secondaryFilter . '-' . ($selectedDate ?? 'all')))
+                        'startDate' => $startDate,
+                        'endDate' => $endDate
+                    ], key('pelabuhan-table-' . $secondaryFilter . '-' . ($startDate ?? 'all') . '-' . ($endDate ?? 'all')))
                 </div>
                 @break
 
             @case('laporan_harian_seksi')
                 @livewire('laporan-harian-seksi-table', [
     'filterNamaSeksi' => $secondaryFilter,
-    'selectedDate' => $selectedDate
-], key('laporan-harian-seksi-table-' . $secondaryFilter))
+    'startDate' => $startDate,
+    'endDate' => $endDate
+], key('laporan-harian-seksi-table-' . $secondaryFilter . '-' . ($startDate ?? '') . '-' . ($endDate ?? '')))
                 @break
 
             @case('laporan_operasional_harian')
                 @livewire('laporan-operasional-harian-table', [
-    'selectedDate' => $selectedDate
-], key('laporan-operasional-harian-table'))
+    'startDate' => $startDate,
+    'endDate' => $endDate
+], key('laporan-operasional-harian-table-' . ($startDate ?? '') . '-' . ($endDate ?? '')))
                 @break
 
             @default

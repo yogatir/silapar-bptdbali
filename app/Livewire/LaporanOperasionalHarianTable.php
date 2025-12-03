@@ -12,23 +12,26 @@ class LaporanOperasionalHarianTable extends Component
 {
     use WithPagination;
 
-    public string $selectedDate = '';
+    public string $startDate = '';
+    public string $endDate = '';
 
     protected $listeners = [
-        'dateChanged' => 'updateSelectedDate',
+        'dateRangeChanged' => 'updateSelectedDateRange',
         'refresh' => '$refresh'
     ];
     
     public $editingId = null;
 
-    public function mount(string $selectedDate = ''): void
+    public function mount(string $startDate = '', string $endDate = ''): void
     {
-        $this->selectedDate = $selectedDate;
+        $this->startDate = $startDate;
+        $this->endDate = $endDate ?: now()->format('Y-m-d');
     }
     
-    public function updateSelectedDate($date): void
+    public function updateSelectedDateRange($dateRange): void
     {
-        $this->selectedDate = $date;
+        $this->startDate = $dateRange['startDate'] ?? '';
+        $this->endDate = $dateRange['endDate'] ?? now()->format('Y-m-d');
         $this->resetPage();
     }
     
@@ -76,8 +79,11 @@ class LaporanOperasionalHarianTable extends Component
             ->orderByDesc('tanggal')
             ->orderByDesc('created_at');
             
-        if (!empty($this->selectedDate)) {
-            $query->whereDate('tanggal', $this->selectedDate);
+        if (!empty($this->startDate)) {
+            $query->whereDate('tanggal', '>=', $this->startDate);
+        }
+        if (!empty($this->endDate)) {
+            $query->whereDate('tanggal', '<=', $this->endDate);
         }
 
         return $query->paginate(25);

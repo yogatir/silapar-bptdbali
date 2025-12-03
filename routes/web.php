@@ -46,6 +46,10 @@ Route::middleware([
     })->middleware('role:' . UserRole::ADMIN)
       ->name('terminal.edit');
       
+    Route::get('/insight', \App\Livewire\Insight::class)
+        ->middleware('role:' . UserRole::ADMIN . ',' . UserRole::KABALAI . ',' . UserRole::SEKSI . ',' . UserRole::SATPEL)
+        ->name('insight');
+      
     Route::get('/laporan-harian-seksi/{laporanHarianSeksi}/edit', function (App\Models\LaporanHarianSeksi $laporanHarianSeksi) {
         return view('laporan-harian-seksi-edit', ['laporanHarianSeksi' => $laporanHarianSeksi]);
     })->middleware('role:' . UserRole::ADMIN)

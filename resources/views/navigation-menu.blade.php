@@ -19,6 +19,9 @@
                         <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                             {{ __('Dashboard') }}
                         </x-nav-link>
+                        <x-nav-link href="{{ route('insight') }}" :active="request()->routeIs('insight')">
+                            {{ __('Insight') }}
+                        </x-nav-link>
                     @endif
                     @if (in_array($role, [\App\Enums\UserRole::ADMIN, \App\Enums\UserRole::SATPEL], true))
                         <x-nav-link href="{{ route('pelabuhan.form') }}" :active="request()->routeIs('pelabuhan.*')">

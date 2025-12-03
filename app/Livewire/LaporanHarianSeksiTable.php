@@ -13,24 +13,27 @@ class LaporanHarianSeksiTable extends Component
     use WithPagination;
 
     public string $filterNamaSeksi = '';
-    public string $selectedDate = '';
+    public string $startDate = '';
+    public string $endDate = '';
     public $editingId = null;
 
     protected $listeners = [
-        'dateChanged' => 'updateSelectedDate',
+        'dateRangeChanged' => 'updateSelectedDateRange',
         'refresh' => '$refresh'
     ];
 
-    public function mount(string $filterNamaSeksi = '', string $selectedDate = ''): void
+    public function mount(string $filterNamaSeksi = '', string $startDate = '', string $endDate = ''): void
     {
         $validOptions = LaporanHarianSeksi::getNamaSeksiList();
         $this->filterNamaSeksi = in_array($filterNamaSeksi, $validOptions, true) ? $filterNamaSeksi : '';
-        $this->selectedDate = $selectedDate;
+        $this->startDate = $startDate;
+        $this->endDate = $endDate ?: now()->format('Y-m-d');
     }
     
-    public function updateSelectedDate($date): void
+    public function updateSelectedDateRange($dateRange): void
     {
-        $this->selectedDate = $date;
+        $this->startDate = $dateRange['startDate'] ?? '';
+        $this->endDate = $dateRange['endDate'] ?? now()->format('Y-m-d');
         $this->resetPage();
     }
 
@@ -78,8 +81,11 @@ class LaporanHarianSeksiTable extends Component
             $query->where('nama_seksi', $this->filterNamaSeksi);
         }
         
-        if (!empty($this->selectedDate)) {
-            $query->whereDate('tanggal', $this->selectedDate);
+        if (!empty($this->startDate)) {
+            $query->whereDate('tanggal', '>=', $this->startDate);
+        }
+        if (!empty($this->endDate)) {
+            $query->whereDate('tanggal', '<=', $this->endDate);
         }
 
         return $query->paginate(50);

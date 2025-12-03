@@ -12,19 +12,22 @@ class PelabuhanTable extends Component
 
     public $filterPelabuhan = '';
     public $editingId = null;
-    public $selectedDate = '';
+    public $startDate = '';
+    public $endDate = '';
 
-    protected $listeners = ['dateChanged' => 'updateSelectedDate'];
+    protected $listeners = ['dateRangeChanged' => 'updateSelectedDateRange'];
 
-    public function mount($filterPelabuhan = '', $selectedDate = '')
+    public function mount($filterPelabuhan = '', $startDate = '', $endDate = '')
     {
         $this->filterPelabuhan = $filterPelabuhan;
-        $this->selectedDate = $selectedDate;
+        $this->startDate = $startDate;
+        $this->endDate = $endDate ?: now()->format('Y-m-d');
     }
     
-    public function updateSelectedDate($date)
+    public function updateSelectedDateRange($dateRange)
     {
-        $this->selectedDate = $date;
+        $this->startDate = $dateRange['startDate'] ?? '';
+        $this->endDate = $dateRange['endDate'] ?? now()->format('Y-m-d');
         $this->resetPage();
     }
 
@@ -43,8 +46,11 @@ class PelabuhanTable extends Component
             $query->where('pelabuhan', $this->filterPelabuhan);
         }
         
-        if (!empty($this->selectedDate)) {
-            $query->whereDate('tanggal', $this->selectedDate);
+        if (!empty($this->startDate)) {
+            $query->whereDate('tanggal', '>=', $this->startDate);
+        }
+        if (!empty($this->endDate)) {
+            $query->whereDate('tanggal', '<=', $this->endDate);
         }
 
         return $query->paginate(50);
@@ -58,8 +64,11 @@ class PelabuhanTable extends Component
             $query->where('pelabuhan', $this->filterPelabuhan);
         }
         
-        if (!empty($this->selectedDate)) {
-            $query->whereDate('tanggal', $this->selectedDate);
+        if (!empty($this->startDate)) {
+            $query->whereDate('tanggal', '>=', $this->startDate);
+        }
+        if (!empty($this->endDate)) {
+            $query->whereDate('tanggal', '<=', $this->endDate);
         }
 
         $aggregates = (clone $query)
