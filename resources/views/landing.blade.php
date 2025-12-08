@@ -197,7 +197,7 @@
             <p class="text-sm font-semibold uppercase tracking-[0.3em] text-blue-200">Hubungi Kami</p>
             <h2 class="mt-4 text-3xl font-bold">BPTD Kelas II Bali</h2>
             <p class="mt-4 text-blue-100 max-w-3xl mx-auto">
-                Jl. Cokroaminoto No. 162, Denpasar Utara • Telp: (0361) 123-456 • Email: bptd-bali@hubdat.go.id
+                Jl. Raya Mengwitani - Terminal Tipe A Mengwi, Badung-Bali • Telp: (0361) 123-456 • Email: bptd-bali@hubdat.go.id
             </p>
             <div class="mt-8 flex flex-wrap justify-center gap-4">
                 <a href="mailto:bptd-bali@hubdat.go.id" class="px-6 py-3 bg-white text-blue-900 font-semibold rounded-lg hover:bg-blue-50 transition">

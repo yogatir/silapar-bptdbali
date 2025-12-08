@@ -4,7 +4,7 @@
             <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/graphy.png')] opacity-10"></div>
             <div class="relative z-10 max-w-7xl mx-auto px-6">
                 <p class="text-sm uppercase tracking-[0.3em] text-blue-200">Input Data</p>
-                <h2 class="mt-2 text-3xl font-bold">{{ __('Laporan UPPKB') }}</h2>
+                <h2 class="mt-2 text-3xl font-bold">{{ __('Laporan UPPKB BPTD Kelas II Bali') }}</h2>
                 <p class="mt-2 text-blue-100">Catat aktivitas operasional harian SATPEL UPPKB CEKIK</p>
             </div>
         </div>
