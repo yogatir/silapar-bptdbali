@@ -40,8 +40,181 @@
 
         @if($pelabuhan && $currentPelabuhanConfig)
 
+        {{-- Show different form for Sampalan --}}
+        @if($pelabuhan === 'sampalan')
+            {{-- Sampalan Basic Form --}}
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                <div>
+                    <label class="block text-sm font-medium">Kapal Operasi</label>
+                    <input type="text" 
+                           wire:model="kapalOperasi" 
+                           class="w-full border rounded p-2 no-spinner" 
+                           inputmode="numeric" 
+                           pattern="[0-9]*"
+                           onkeydown="return (event.key >= '0' && event.key <= '9') || event.key === 'Backspace' || event.key === 'Delete' || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Tab' || event.key === 'Home' || event.key === 'End' || (event.ctrlKey && ['a', 'c', 'v', 'x'].includes(event.key.toLowerCase())) || event.metaKey"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                           onpaste="event.preventDefault(); const paste = (event.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, ''); if(paste) { this.value = paste; this.dispatchEvent(new Event('input', { bubbles: true })); }">
+                    @error('kapalOperasi') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">Trip Kedatangan</label>
+                    <input type="text" 
+                           wire:model="tripKedatangan" 
+                           class="w-full border rounded p-2 no-spinner" 
+                           inputmode="numeric" 
+                           pattern="[0-9]*"
+                           onkeydown="return (event.key >= '0' && event.key <= '9') || event.key === 'Backspace' || event.key === 'Delete' || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Tab' || event.key === 'Home' || event.key === 'End' || (event.ctrlKey && ['a', 'c', 'v', 'x'].includes(event.key.toLowerCase())) || event.metaKey"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                           onpaste="event.preventDefault(); const paste = (event.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, ''); if(paste) { this.value = paste; this.dispatchEvent(new Event('input', { bubbles: true })); }">
+                    @error('tripKedatangan') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">Trip Keberangkatan</label>
+                    <input type="text" 
+                           wire:model="tripKeberangkatan" 
+                           class="w-full border rounded p-2 no-spinner" 
+                           inputmode="numeric" 
+                           pattern="[0-9]*"
+                           onkeydown="return (event.key >= '0' && event.key <= '9') || event.key === 'Backspace' || event.key === 'Delete' || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Tab' || event.key === 'Home' || event.key === 'End' || (event.ctrlKey && ['a', 'c', 'v', 'x'].includes(event.key.toLowerCase())) || event.metaKey"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                           onpaste="event.preventDefault(); const paste = (event.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, ''); if(paste) { this.value = paste; this.dispatchEvent(new Event('input', { bubbles: true })); }">
+                    @error('tripKeberangkatan') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">Total Penumpang</label>
+                    <input type="text" 
+                           wire:model="totalPenumpang" 
+                           class="w-full border rounded p-2 no-spinner" 
+                           inputmode="numeric" 
+                           pattern="[0-9]*"
+                           onkeydown="return (event.key >= '0' && event.key <= '9') || event.key === 'Backspace' || event.key === 'Delete' || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Tab' || event.key === 'Home' || event.key === 'End' || (event.ctrlKey && ['a', 'c', 'v', 'x'].includes(event.key.toLowerCase())) || event.metaKey"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                           onpaste="event.preventDefault(); const paste = (event.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, ''); if(paste) { this.value = paste; this.dispatchEvent(new Event('input', { bubbles: true })); }">
+                    @error('totalPenumpang') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </div>
+            </div>
 
-        {{-- Show numeric fields for all pelabuhan --}}
+            {{-- Sampalan Dermaga Form with detailed fields --}}
+            @if(count($dermaga) > 0)
+                <div class="mt-6 space-y-6">
+                    <h2 class="text-lg font-semibold">Dermaga</h2>
+                    @foreach($dermaga as $i => $dermagaItem)
+                        <div class="border p-4 rounded bg-gray-50">
+                            <h3 class="font-semibold mb-4 text-blue-700">{{ $dermagaItem['nama'] }}</h3>
+                            @if(isset($dermagaItem['kapal']) && is_array($dermagaItem['kapal']) && count($dermagaItem['kapal']) > 0)
+                                <div class="space-y-3">
+                                    @foreach($dermagaItem['kapal'] as $j => $kapal)
+                                        <div class="grid grid-cols-1 md:grid-cols-9 gap-3 items-start p-3 bg-white rounded border border-gray-200">
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-700 mb-1">Jam Sandar</label>
+                                                <input type="time"
+                                                       wire:model="dermaga.{{ $i }}.kapal.{{ $j }}.jam_sandar"
+                                                       class="w-full border rounded p-2 text-sm">
+                                                @error("dermaga.$i.kapal.$j.jam_sandar") <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-700 mb-1">Jam Tolak</label>
+                                                <input type="time"
+                                                       wire:model="dermaga.{{ $i }}.kapal.{{ $j }}.jam_tolak"
+                                                       class="w-full border rounded p-2 text-sm">
+                                                @error("dermaga.$i.kapal.$j.jam_tolak") <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-700 mb-1">Nama Kapal</label>
+                                                <input type="text"
+                                                       wire:model="dermaga.{{ $i }}.kapal.{{ $j }}.nama_kapal"
+                                                       placeholder="Nama Kapal"
+                                                       class="w-full border rounded p-2 text-sm">
+                                                @error("dermaga.$i.kapal.$j.nama_kapal") <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-700 mb-1">Penumpang Turun</label>
+                                                <input type="text"
+                                                       wire:model="dermaga.{{ $i }}.kapal.{{ $j }}.penumpang_turun"
+                                                       placeholder="0"
+                                                       class="w-full border rounded p-2 text-sm no-spinner"
+                                                       inputmode="numeric"
+                                                       pattern="[0-9]*"
+                                                       onkeydown="return (event.key >= '0' && event.key <= '9') || event.key === 'Backspace' || event.key === 'Delete' || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Tab' || event.key === 'Home' || event.key === 'End' || (event.ctrlKey && ['a', 'c', 'v', 'x'].includes(event.key.toLowerCase())) || event.metaKey"
+                                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                                       onpaste="event.preventDefault(); const paste = (event.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, ''); if(paste) { this.value = paste; this.dispatchEvent(new Event('input', { bubbles: true })); }">
+                                                @error("dermaga.$i.kapal.$j.penumpang_turun") <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-700 mb-1">Penumpang Naik</label>
+                                                <input type="text"
+                                                       wire:model="dermaga.{{ $i }}.kapal.{{ $j }}.penumpang_naik"
+                                                       placeholder="0"
+                                                       class="w-full border rounded p-2 text-sm no-spinner"
+                                                       inputmode="numeric"
+                                                       pattern="[0-9]*"
+                                                       onkeydown="return (event.key >= '0' && event.key <= '9') || event.key === 'Backspace' || event.key === 'Delete' || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Tab' || event.key === 'Home' || event.key === 'End' || (event.ctrlKey && ['a', 'c', 'v', 'x'].includes(event.key.toLowerCase())) || event.metaKey"
+                                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                                       onpaste="event.preventDefault(); const paste = (event.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, ''); if(paste) { this.value = paste; this.dispatchEvent(new Event('input', { bubbles: true })); }">
+                                                @error("dermaga.$i.kapal.$j.penumpang_naik") <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-700 mb-1">Trip Berangkat</label>
+                                                <input type="text"
+                                                       wire:model="dermaga.{{ $i }}.kapal.{{ $j }}.trip_berangkat"
+                                                       placeholder="0"
+                                                       class="w-full border rounded p-2 text-sm no-spinner"
+                                                       inputmode="numeric"
+                                                       pattern="[0-9]*"
+                                                       onkeydown="return (event.key >= '0' && event.key <= '9') || event.key === 'Backspace' || event.key === 'Delete' || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Tab' || event.key === 'Home' || event.key === 'End' || (event.ctrlKey && ['a', 'c', 'v', 'x'].includes(event.key.toLowerCase())) || event.metaKey"
+                                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                                       onpaste="event.preventDefault(); const paste = (event.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, ''); if(paste) { this.value = paste; this.dispatchEvent(new Event('input', { bubbles: true })); }">
+                                                @error("dermaga.$i.kapal.$j.trip_berangkat") <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-700 mb-1">Trip Datang</label>
+                                                <input type="text"
+                                                       wire:model="dermaga.{{ $i }}.kapal.{{ $j }}.trip_datang"
+                                                       placeholder="0"
+                                                       class="w-full border rounded p-2 text-sm no-spinner"
+                                                       inputmode="numeric"
+                                                       pattern="[0-9]*"
+                                                       onkeydown="return (event.key >= '0' && event.key <= '9') || event.key === 'Backspace' || event.key === 'Delete' || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Tab' || event.key === 'Home' || event.key === 'End' || (event.ctrlKey && ['a', 'c', 'v', 'x'].includes(event.key.toLowerCase())) || event.metaKey"
+                                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                                       onpaste="event.preventDefault(); const paste = (event.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, ''); if(paste) { this.value = paste; this.dispatchEvent(new Event('input', { bubbles: true })); }">
+                                                @error("dermaga.$i.kapal.$j.trip_datang") <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-700 mb-1">Kegiatan</label>
+                                                <select wire:model="dermaga.{{ $i }}.kapal.{{ $j }}.kegiatan"
+                                                        class="w-full border rounded p-2 text-sm">
+                                                    <option value="">-- Pilih --</option>
+                                                    <option value="Bongkar">Bongkar</option>
+                                                    <option value="Muat">Muat</option>
+                                                    <option value="Bongkar Muat">Bongkar Muat</option>
+                                                </select>
+                                                @error("dermaga.$i.kapal.$j.kegiatan") <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-700 mb-1">&nbsp;</label>
+                                                <button type="button"
+                                                        wire:click="removeKapal({{ $i }}, {{ $j }})"
+                                                        class="text-red-500 hover:text-red-700 px-2 py-1 rounded hover:bg-red-50 text-xl leading-none">&times;</button>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+                            <button type="button" 
+                                    wire:click="addKapal({{ $i }})"
+                                    class="mt-3 text-blue-600 text-sm font-medium hover:underline flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                Tambah Kapal
+                            </button>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
+        @else
+        {{-- Show standard form for other pelabuhan --}}
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
                 <div>
                     <label class="block text-sm font-medium">Kapal Operasi</label>
@@ -146,6 +319,7 @@
                     @endforeach
                 </div>
             @endif
+        @endif
         @endif
 
         @if($pelabuhan && $currentPelabuhanConfig)

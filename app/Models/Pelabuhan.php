@@ -22,6 +22,8 @@ class Pelabuhan extends Model
         'roda_4_penumpang',
         'roda_4_barang',
         'dermaga',
+        'trip_kedatangan',
+        'trip_keberangkatan',
     ];
 
     protected function casts(): array
@@ -34,6 +36,8 @@ class Pelabuhan extends Model
             'roda_2' => 'integer',
             'roda_4_penumpang' => 'integer',
             'roda_4_barang' => 'integer',
+            'trip_kedatangan' => 'integer',
+            'trip_keberangkatan' => 'integer',
             'dermaga' => 'array',
         ];
     }

@@ -281,7 +281,7 @@
                             const trafficData = @this.trafficData;
                             
                             this.chart = new Chart(canvas, {
-                                type: 'line',
+                                type: 'bar',
                                 data: {
                                     labels: trafficData.labels || [],
                                     datasets: trafficData.datasets || []

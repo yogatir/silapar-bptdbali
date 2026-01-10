@@ -23,6 +23,11 @@ class PelabuhanForm extends Component
     public $roda4Barang;
     public $editingId = null;
     public $recordId = null;
+    
+    // For Sampalan special form
+    public $tripKedatangan;
+    public $tripKeberangkatan;
+    public $totalPenumpang;
 
     public $pelabuhanConfig = [];
     public $currentPelabuhanConfig = null;
@@ -46,15 +51,25 @@ class PelabuhanForm extends Component
         if ($id) {
             $record = Pelabuhan::findOrFail($id);
             $this->editingId = $id;
-            $this->tanggal = $record->tanggal->format('Y-m-d');
+            $this->tanggal = \Carbon\Carbon::parse($record->tanggal)->format('Y-m-d');
             $this->waktu = $record->waktu;
             $this->pelabuhan = $record->pelabuhan;
             $this->kapalOperasi = $record->kapal_operasi;
-            $this->trip = $record->trip;
-            $this->penumpang = $record->penumpang;
-            $this->roda2 = $record->roda_2;
-            $this->roda4Penumpang = $record->roda_4_penumpang;
-            $this->roda4Barang = $record->roda_4_barang;
+            
+            if ($record->pelabuhan === 'sampalan') {
+                // Load Sampalan specific fields
+                $this->tripKedatangan = $record->trip_kedatangan ?? 0;
+                $this->tripKeberangkatan = $record->trip_keberangkatan ?? 0;
+                $this->totalPenumpang = $record->penumpang;
+            } else {
+                // Load standard fields
+                $this->trip = $record->trip;
+                $this->penumpang = $record->penumpang;
+                $this->roda2 = $record->roda_2;
+                $this->roda4Penumpang = $record->roda_4_penumpang;
+                $this->roda4Barang = $record->roda_4_barang;
+            }
+            
             $this->dermaga = $record->dermaga ?? [];
             
             // Trigger the updatedPelabuhan event to load dermaga config
@@ -69,12 +84,22 @@ class PelabuhanForm extends Component
             
             // Only initialize dermaga if it's empty or not set
             if (empty($this->dermaga)) {
-                $this->dermaga = collect($this->currentPelabuhanConfig['dermaga'])->map(function ($dermaga) {
-                    return [
-                        'nama' => $dermaga['nama'],
-                        'kapal' => []
-                    ];
-                })->toArray();
+                if ($value === 'sampalan') {
+                    // For Sampalan, initialize with detailed dermaga structure
+                    $this->dermaga = collect($this->currentPelabuhanConfig['dermaga'])->map(function ($dermaga) {
+                        return [
+                            'nama' => $dermaga['nama'],
+                            'kapal' => []  // Each kapal will have: jam, nama_kapal, trip_type, penumpang
+                        ];
+                    })->toArray();
+                } else {
+                    $this->dermaga = collect($this->currentPelabuhanConfig['dermaga'])->map(function ($dermaga) {
+                        return [
+                            'nama' => $dermaga['nama'],
+                            'kapal' => []
+                        ];
+                    })->toArray();
+                }
             }
         } else {
             $this->currentPelabuhanConfig = null;
@@ -85,7 +110,21 @@ class PelabuhanForm extends Component
     public function addKapal($dermagaIndex)
     {
         if (isset($this->dermaga[$dermagaIndex])) {
-            $this->dermaga[$dermagaIndex]['kapal'][] = '';
+            if ($this->pelabuhan === 'sampalan') {
+                // For Sampalan, add detailed kapal structure
+                $this->dermaga[$dermagaIndex]['kapal'][] = [
+                    'jam_sandar' => '',
+                    'jam_tolak' => '',
+                    'nama_kapal' => '',
+                    'penumpang_turun' => '',
+                    'penumpang_naik' => '',
+                    'trip_berangkat' => '',
+                    'trip_datang' => '',
+                    'kegiatan' => ''
+                ];
+            } else {
+                $this->dermaga[$dermagaIndex]['kapal'][] = '';
+            }
         }
     }
 
@@ -105,32 +144,65 @@ class PelabuhanForm extends Component
             return;
         }
 
-        $rules = [
-            'tanggal' => 'required|date',
-            'waktu' => 'required',
-            'pelabuhan' => 'required',
-            'kapalOperasi' => 'required|numeric|min:0',
-            'trip' => 'required|numeric|min:0',
-            'penumpang' => 'required|numeric|min:0',
-            'roda2' => 'required|numeric|min:0',
-            'roda4Penumpang' => 'required|numeric|min:0',
-            'roda4Barang' => 'required|numeric|min:0',
-        ];
+        if ($this->pelabuhan === 'sampalan') {
+            // Validation rules for Sampalan
+            $rules = [
+                'tanggal' => 'required|date',
+                'waktu' => 'required',
+                'pelabuhan' => 'required',
+                'kapalOperasi' => 'required|numeric|min:0',
+                'tripKedatangan' => 'required|numeric|min:0',
+                'tripKeberangkatan' => 'required|numeric|min:0',
+                'totalPenumpang' => 'required|numeric|min:0',
+            ];
+        } else {
+            // Standard validation rules
+            $rules = [
+                'tanggal' => 'required|date',
+                'waktu' => 'required',
+                'pelabuhan' => 'required',
+                'kapalOperasi' => 'required|numeric|min:0',
+                'trip' => 'required|numeric|min:0',
+                'penumpang' => 'required|numeric|min:0',
+                'roda2' => 'required|numeric|min:0',
+                'roda4Penumpang' => 'required|numeric|min:0',
+                'roda4Barang' => 'required|numeric|min:0',
+            ];
+        }
 
         $this->validate($rules);
 
-        $data = [
-            'tanggal' => $this->tanggal,
-            'waktu' => $this->waktu,
-            'pelabuhan' => $this->pelabuhan,
-            'kapal_operasi' => $this->kapalOperasi ?? 0,
-            'trip' => $this->trip ?? 0,
-            'penumpang' => $this->penumpang ?? 0,
-            'roda_2' => $this->roda2 ?? 0,
-            'roda_4_penumpang' => $this->roda4Penumpang ?? 0,
-            'roda_4_barang' => $this->roda4Barang ?? 0,
-            'dermaga' => $this->dermaga ?? [],
-        ];
+        if ($this->pelabuhan === 'sampalan') {
+            // Data structure for Sampalan
+            $data = [
+                'tanggal' => $this->tanggal,
+                'waktu' => $this->waktu,
+                'pelabuhan' => $this->pelabuhan,
+                'kapal_operasi' => $this->kapalOperasi ?? 0,
+                'trip' => ($this->tripKedatangan ?? 0) + ($this->tripKeberangkatan ?? 0), // Combined trip
+                'penumpang' => $this->totalPenumpang ?? 0,
+                'roda_2' => 0,
+                'roda_4_penumpang' => 0,
+                'roda_4_barang' => 0,
+                'dermaga' => $this->dermaga ?? [],
+                'trip_kedatangan' => $this->tripKedatangan ?? 0,
+                'trip_keberangkatan' => $this->tripKeberangkatan ?? 0,
+            ];
+        } else {
+            // Standard data structure
+            $data = [
+                'tanggal' => $this->tanggal,
+                'waktu' => $this->waktu,
+                'pelabuhan' => $this->pelabuhan,
+                'kapal_operasi' => $this->kapalOperasi ?? 0,
+                'trip' => $this->trip ?? 0,
+                'penumpang' => $this->penumpang ?? 0,
+                'roda_2' => $this->roda2 ?? 0,
+                'roda_4_penumpang' => $this->roda4Penumpang ?? 0,
+                'roda_4_barang' => $this->roda4Barang ?? 0,
+                'dermaga' => $this->dermaga ?? [],
+            ];
+        }
 
         if ($this->editingId) {
             $record = Pelabuhan::findOrFail($this->editingId);
@@ -169,6 +241,9 @@ class PelabuhanForm extends Component
             'roda2',
             'roda4Penumpang',
             'roda4Barang',
+            'tripKedatangan',
+            'tripKeberangkatan',
+            'totalPenumpang',
             'currentPelabuhanConfig'
         ]);
         
